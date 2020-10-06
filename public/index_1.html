@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>eye track</title>
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.8.1/localforage.js"></script>
+    <script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/abdmob/x2js/master/xml2json.js"></script>
+    <link rel="stylesheet" href="book.css">
+
+    <script src="./ambient.js"></script>
+    <script src="./trans.js"></script>
+    <script src="./control.js"></script>
+</head>
+<body  id="all">
+    <audio id="tune"></audio>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <h1 style="text-align:center">Отрывок из "Властелин Колец: братство кольца"</h1>
+    <div class="booktext">
+        <p>
+            <div id="w1" style="line-height: 3vw">Ручей они перешли снова вброд, почти бегом пересекли открытый луг, вошли в рощу. </div>
+            <div id="w2">Лес был большим. В основном, дубы, но попадались и ясени. </div>
+            <div id="w3" style="line-height: 3vw">Земля оказалась ровной, подлеска почти не было, но деревья стояли так близко друг к другу, что за ними все равно ничего не было видно. </div>
+            <div id="w4">Поднялся ветер и внезапным порывом взмел опавшие листья. </div>
+            <div id="w5" style="line-height: 3vw">С затянувшегося тучами неба упали первые капли и полил ливень. </div>
+        </p>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <script>
+        const OFFSET_PART_X = 20;
+        const OFFSET_PART_Y = 20;
+        let offset_x = 0;
+        let offset_y = +20;
+        webgazer.setRegression('ridge').setGazeListener(function (data, elapsedTime)
+        {
+            // console.log('data', data);
+            if (data == null)
+            {
+                return;
+            }
+
+            var xprediction = data.x + offset_x; // these x coordinates are relative to the viewport
+            var yprediction = data.y + offset_y; // these y coordinates are relative to the viewport
+            // console.log(xprediction, yprediction, elapsedTime); // elapsed time is based on time since begin was called
+
+            if (document.elementFromPoint(xprediction, yprediction) &&
+                document.elementFromPoint(xprediction, yprediction).attributes)
+            {
+                let sent_id = document.elementFromPoint(xprediction, yprediction).attributes[0].value;
+                if (document.getElementById(sent_id) && sent_id.includes("w"))
+                {
+                    let sent = document.getElementById(sent_id).innerHTML;
+                    // console.log(sent);
+                    predict_ambient(sent, sent_id);
+                }
+            }
+        }).begin();
+        webgazer.showPredictionPoints(true);
+        webgazer.params.showVideoPreview = true;
+    </script>
+
+</body>
+
+</html>

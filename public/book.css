@@ -1,0 +1,14 @@
+.booktext{
+    font-size: 3vw;
+    line-height: 12vw;
+
+}
+
+* {
+    color: #96a2b2;
+    font-family: Arial;
+}
+
+body {
+    background-color: #2c2c2f;
+}
